@@ -27,6 +27,11 @@ cb(null, Date.now() + path.extname(file.originalname));
 const upload = multer({ storage: storage });
 
 // กําหนดเส8นทางหรือ url สําหรับเรียกใช8งานแตKละ api
+
 router.post('/products', upload.single('image'), productController.createProduct);
 router.get('/products', productController.getdata);
+// url สําหรับแก8ไขข8อมูลสินค8า
+router.put('/products/:proId', upload.single('image'), productController.updateProduct);
+// url สําหรับลบข8อมูลสินค8า
+router.delete('/products/:proId', productController.deleteProduct);
 module.exports = router;
