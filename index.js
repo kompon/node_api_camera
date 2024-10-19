@@ -1,13 +1,19 @@
-const express = require("express")
-const app = express()
+const express = require('express');
+const sequelize = require('./config/db');
+const routes = require('./routes/productRoutes');
+const app = express();
+app.use(express.json());
 
-require('dotenv').config()
+//ระบุตําแหนKง url สําหรับเรียกดูรูปภาพ
+app.use(express.static('public'));
+app.use('/images', express.static('images'));
 
-app.use(express.json())
+//ระบุตําแหนKง url สําหรักเรียกใช8งาน api
+app.use('/api', routes);
 
-
-const bookRouter = require('./routes/book.router')
-
-app.use("/api/v1/books", bookRouter)
-
-app.listen(process.env.PORT, () => console.log("Server is running on port 5000"))
+const PORT = process.env.PORT || 3000;
+sequelize.sync({force: false}).then(() => {
+app.listen(PORT, () => {
+console.log(`Server running on port ${PORT}`);
+});
+}).catch(error => console.error(error));
