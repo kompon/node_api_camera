@@ -5,32 +5,41 @@ const fs = require('fs');
 
 const productController = require('../controllers/productController');
 const router = express.Router();
-//กําหนดโฟลเดอรgสําหรับจัดเก็บไฟลgที่อัพโหลด
+
+// กำหนดโฟลเดอร์สำหรับจัดเก็บไฟล์ที่อัพโหลด
 const upload_path = './public/images';
-// ตรวจสอบวKามีโฟลเดอรg uploads หรือไมK
+
+// ตรวจสอบว่ามีโฟลเดอร์ uploads หรือไม่
 if (!fs.existsSync(upload_path)) {
-// ถ8าไมKมีให8สร8างใหมK
-fs.mkdirSync(upload_path, { recursive: true });
+    // ถ้าไม่มีให้สร้างใหม่
+    fs.mkdirSync(upload_path, { recursive: true });
 }
-//ตั้งคKา multer สําหรับจัดการไฟลgอัปโหลด
+
+// ตั้งค่า multer สำหรับจัดการไฟล์อัปโหลด
 const storage = multer.diskStorage({
-destination: (req, file, cb) => {
-//กําหนดให8อัพโหลดไปไฟลgไปไว8ที่โฟลเดอรg public/images
-cb(null, 'public/images/');
-},
-filename: (req, file, cb) => {
-//ตั้งชื่อไฟลgโดยใช8วันที่และเวลาปûจจุบัน
-cb(null, Date.now() + path.extname(file.originalname));
-},
+    destination: (req, file, cb) => {
+        // กำหนดให้อัพโหลดไฟล์ไปไว้ที่โฟลเดอร์ public/images
+        cb(null, 'public/images/');
+    },
+    filename: (req, file, cb) => {
+        // ตั้งชื่อไฟล์โดยใช้วันที่และเวลาปัจจุบัน
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
 });
 const upload = multer({ storage: storage });
 
-// กําหนดเส8นทางหรือ url สําหรับเรียกใช8งานแตKละ api
+// กำหนดเส้นทางหรือ URL สำหรับเรียกใช้งานแต่ละ API
 
-router.post('/products', upload.single('image'), productController.createProduct);
-router.get('/products', productController.getdata);
-// url สําหรับแก8ไขข8อมูลสินค8า
-router.put('/products/:proId', upload.single('image'), productController.updateProduct);
-// url สําหรับลบข8อมูลสินค8า
-router.delete('/products/:proId', productController.deleteProduct);
+// สร้างสินค้าใหม่ พร้อมอัปโหลดรูปภาพ
+router.post('/Products', upload.single('image'), productController.createProduct);
+
+// ดึงข้อมูลสินค้าทั้งหมด
+router.get('/Products', productController.getdata);
+
+// แก้ไขข้อมูลสินค้าตาม ID พร้อมอัปโหลดรูปภาพใหม่
+router.put('/Products/:proId', upload.single('image'), productController.updateProduct);
+
+// ลบข้อมูลสินค้าตาม ID
+router.delete('/Products/:proId', productController.deleteProduct);
+
 module.exports = router;
